@@ -93,7 +93,7 @@ class ProtobufConan(ConanFile):
                     self.copy("protoc", "bin", "protobuf-2.6.1/src/.libs/", keep_path=False)
                     self.copy("*.9.dylib", "bin", "protobuf-2.6.1/src/.libs", keep_path=False)
             else:
-                self.copy("protoc", "bin", "protobuf-2.6.1/src/", keep_path=False)
+                self.copy("protoc", "bin", "protobuf-2.6.1/src/.libs/", keep_path=False)
 
     def package_info(self):
         if self.settings.os == "Windows":

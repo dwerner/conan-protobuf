@@ -12,7 +12,7 @@ class ProtobufConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     exports = "CMakeLists.txt", "lib*.cmake", "extract_includes.bat.in", "protoc.cmake", "tests.cmake", "change_dylib_names.sh"
     options = {"shared": [True, False]}
-    default_options = "shared=True"
+    default_options = "shared=False"
     generators = "cmake"
 
     def config(self):
@@ -80,20 +80,18 @@ class ProtobufConan(ConanFile):
                 self.copy("*.9.dylib", "lib", "protobuf-2.6.1/src/.libs", keep_path=False)
 
             # Copy the exe to bin
-            if self.settings.os == "Macos":
-                if not self.options.shared:
-                    self.copy("protoc", "bin", "protobuf-2.6.1/src/", keep_path=False)
-                else:
-                    # "protoc" has libproto*.dylib dependencies with absolute file paths.
-                    # Change them to be relative.
-                    self.run("cd protobuf-2.6.1/src/.libs && bash ../../cmake/change_dylib_names.sh")
-
-                    # "src/protoc" may be a wrapper shell script which execute "src/.libs/protoc".
-                    # Copy "src/.libs/protoc" instead of "src/protoc"
-                    self.copy("protoc", "bin", "protobuf-2.6.1/src/.libs/", keep_path=False)
-                    self.copy("*.9.dylib", "bin", "protobuf-2.6.1/src/.libs", keep_path=False)
+            if not self.options.shared:
+                self.copy("protoc", "bin", "protobuf-2.6.1/src/", keep_path=False)
             else:
+                # "src/protoc" may be a wrapper shell script which execute "src/.libs/protoc".
+                # Copy "src/.libs/protoc" instead of "src/protoc"
                 self.copy("protoc", "bin", "protobuf-2.6.1/src/.libs/", keep_path=False)
+
+            if self.settings.os == "Macos" and self.options.shared:
+                # "protoc" has libproto*.dylib dependencies with absolute file paths.
+                # Change them to be relative.
+                self.run("cd protobuf-2.6.1/src/.libs && bash ../../cmake/change_dylib_names.sh")
+                self.copy("*.9.dylib", "bin", "protobuf-2.6.1/src/.libs", keep_path=False)
 
     def package_info(self):
         if self.settings.os == "Windows":

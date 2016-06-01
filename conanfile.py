@@ -6,11 +6,11 @@ import shutil
 class ProtobufConan(ConanFile):
     name = "Protobuf"
     version = "2.6.1"
-    url = "https://github.com/memsharded/conan-protobuf.git"
+    url = "https://github.com/dwerner/conan-protobuf.git"
     license = "https://github.com/google/protobuf/blob/v2.6.1/LICENSE"
     requires = "zlib/1.2.8@lasote/stable"
     settings = "os", "compiler", "build_type", "arch"
-    exports = "CMakeLists.txt", "lib*.cmake", "extract_includes.bat.in", "protoc.cmake", "tests.cmake", "change_dylib_names.sh"
+    exports = "CMakeLists.txt", "change_dylib_names.sh"
     options = {"shared": [True, False]}
     default_options = "shared=False"
     generators = "cmake"
@@ -20,18 +20,9 @@ class ProtobufConan(ConanFile):
 
     def source(self):
         tools.download("https://github.com/google/protobuf/"
-                       "releases/download/v2.6.1/protobuf-2.6.1.zip",
-                       "protobuf.zip")
-        tools.unzip("protobuf.zip")
-        os.unlink("protobuf.zip")
-        os.makedirs("protobuf-2.6.1/cmake")
-        shutil.move("CMakeLists.txt", "protobuf-2.6.1/cmake")
-        shutil.move("libprotobuf.cmake", "protobuf-2.6.1/cmake")
-        shutil.move("libprotobuf-lite.cmake", "protobuf-2.6.1/cmake")
-        shutil.move("libprotoc.cmake", "protobuf-2.6.1/cmake")
-        shutil.move("protoc.cmake", "protobuf-2.6.1/cmake")
-        shutil.move("tests.cmake", "protobuf-2.6.1/cmake")
-        shutil.move("extract_includes.bat.in", "protobuf-2.6.1/cmake")
+                       "releases/download/v2.6.1/protobuf-2.6.1.zip", "protobuf-2.6.1.zip")
+        tools.unzip("protobuf-2.6.1.zip")
+        os.unlink("protobuf-2.6.1.zip")
         shutil.move("change_dylib_names.sh", "protobuf-2.6.1/cmake")
 
     def build(self):

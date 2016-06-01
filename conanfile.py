@@ -30,8 +30,8 @@ class ProtobufConan(ConanFile):
             args = ['-DBUILD_TESTING=OFF']
             args += ['-DBUILD_SHARED_LIBS=%s' % ('ON' if self.options.shared else 'OFF')]
             cmake = CMake(self.settings)
-            self.run('cd protobuf-2.6.1/cmake && cmake . %s %s' % (cmake.command_line, ' '.join(args)))
-            self.run("cd protobuf-2.6.1/cmake && cmake -DCMAKE_CXX_FLAGS=\"-D_GLIBCXX_USE_CXX11_ABI=0\" --build . %s" % cmake.build_config)
+            self.run('cd protobuf-2.6.1/cmake && cmake . -DCMAKE_CXX_FLAGS=\"-D_GLIBCXX_USE_CXX11_ABI=0\" %s %s' % (cmake.command_line, ' '.join(args)))
+            self.run("cd protobuf-2.6.1/cmake && cmake --build . %s" % cmake.build_config)
         else:
             env = ConfigureEnvironment(self.deps_cpp_info, self.settings)
 
